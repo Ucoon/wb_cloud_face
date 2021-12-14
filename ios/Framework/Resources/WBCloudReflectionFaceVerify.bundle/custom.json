@@ -1,0 +1,51 @@
+{
+    "name": "custom",
+
+    "statusBarStyle":   "dark",
+    "navbarTintColor":  "0x333333",
+    "baseNavBarColor":  "0x0",
+    "authNavBarColor":  "0x22252A",
+
+    "imageBgColor":     "0xffffff",
+    "faceNormalColor": "0x33FFFFFF",
+    "faceSatisfyColor": "0x5065FF",
+    "faceErrorColor": "0xFF6034",
+
+    "guideLabelColor":  "0x363C62",
+    "guideLabelErrorColor" : "0xFF6034",
+    "customTipsColor":  "0x545874",
+    "bottomTipsBgColor":  "0xFAFAFA",
+    "bottomTipsTextColor": "0x8E92AE",
+
+    "backButtonImage": "backbutton@light",
+    "authBackButtonImage": "backbutton@dark",
+    "authBodyImage": "wbcf_auth_face_a",
+    "authSafeImage": "wbcf_auth_safe@light",
+    "authSafeLabelBackgroundColor": "0x0F5065FF",
+    "authSafeLabelTextColor": "0x4056F5",
+    "authSafeStyleBodyImage": "wbcf_auth_face_b",
+    "authSafeGuideLabelTextColor": "0x545874",
+    "authCheckboxUnSelectImage":"wbcf_checkbox_unselect",
+    "authCheckboxSelectImage":"wbcf_checkbox_select",
+    "authCheckboxTipsColor": "0x8E92AE",
+    "authCheckboxLinkColor": "0x5065FF",
+    "authAgreeButtonNormalColor": "0xB7C0FF",
+    "authAgreeButtonHighlightColor": "0x5065FF",
+    "authAgreeTextNormalColor":"0xFFFFFF",
+    "authAgreeTextHighlightColor":"0xFFFFFF",
+
+    "alertTitleColor":"0x000000",
+    "alertMessageColor":"0x000000",
+    "alertLeftBtnColor":"0x5065FF",
+    "alertRightBtnColor":"0x5065FF",
+    "alertBackgroundColor":"0xFFFFFF",
+    
+    "resultSuccessImage" : "upload_succeed",
+    "resultFailureImage" : "upload_failed",
+    "resultDetailTextColor" : "0x8E92AE",
+    "resultRetryButtonColor" : "0x5065FF",
+    "resultRetryTextColor" : "0xFFFFFF",
+    "resultCancelButtonColor" : "0x5065FF",
+    "resultCancelTextColor": "0x5065FF",
+}
+
