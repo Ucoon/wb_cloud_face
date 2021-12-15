@@ -10,7 +10,10 @@
 dependencies:
   flutter:
     sdk: flutter
-  wb_cloud_face: ^x.x.x
+  wb_cloud_face:
+    git:
+      url: https://github.com/Ucoon/wb_cloud_face.git
+      ref: master
 ```
 
 导入：
