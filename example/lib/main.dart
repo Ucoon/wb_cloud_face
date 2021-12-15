@@ -124,15 +124,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _openCloudFaceService() async {
+    ///这些都是 WbCloudFaceVerifySdk.InputData 对象里的字段，是需要传入的数据信息
     WbCloudFaceParams params = WbCloudFaceParams(
-      nonce: 'b112f0a7cb274035b5ca9bdde46b5960',
-      userId: '003ecaf667a54774b7a0f995c539c068',
-      keyLicence:
-          'evncw5yt9V4g5Yqw0+0B+EzKEHNKgKkgJzUS4JLSYpFim/yVh1y0ZMkS4iMPc7FVYGHmbhHRJezeZj1DQJ0CHIssX5IMqeE+nxm+zyjZfaAxFG55E4W0oLT7W9U1b5hCo8Q10a4iayVzT4S9ilRXLyFRHRUjU5cRGHecVf93UNeAJYvwXMzFdsuoV4rb6u94SZzjAYN3DFSlYzY2sK6l5pImuevYwhBmfhdLiMA0QVOXzcmGLl5b+GYHBf90J9tCHroQST1zGf1PIKNy08vqNA9XzxJWJZf2uyfPKsLHUKz1y17Z8me5m3bsxhTP+rqpVFyOsSLQG8TRjxvRj+60EQ==',
-      appId: 'TIDAAQ7A',
-      order: 'bb2a036047d7411ca8ce716cd609ac06',
-      sign: '503A4FC117D419A665BFC7937FCA281C8A6D088F',
-      faceId: 'wb0b340f1f034b2aa276ae1eee6eeb00',
+      nonce: '', //32位随机字符串
+      userId: '', //user id
+      keyLicence: '', //在人脸核身控制台内申请
+      appId: '', //APP_ID
+      order: '', //订单号
+      sign: '', //签名信息
+      faceId: '', //此次刷脸用户标识，合作方需要向人脸识别后台拉取获得，详见获取 faceId 接口
     );
     WbCloudFaceVerifyResult res =
         await WbCloudFace.openCloudFaceService(params: params);

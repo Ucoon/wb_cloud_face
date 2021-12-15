@@ -22,6 +22,9 @@ rootProject.allprojects {
         maven {
             url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
         }
+        flatDir {
+            dirs project(':wb_cloud_face').file('libs')
+        }
     }
 }
 
@@ -38,12 +41,6 @@ android {
     defaultConfig {
         minSdkVersion 16
         consumerProguardFiles 'webank-KYC-demo-proguard-rules.pro'
-    }
-
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
     }
 }
 
