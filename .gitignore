@@ -3,5 +3,6 @@
 
 .packages
 .pub/
+.fvm
 .idea
 build/
