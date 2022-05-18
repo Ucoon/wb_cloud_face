@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.resource = 'Framework/Resources/face-tracker-v001.bundle', 'Framework/Resources/WBCloudReflectionFaceVerify.bundle'
   s.dependency 'Flutter'
   s.platform = :ios, '8.0'
-
+  s.static_framework = true
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
 end
