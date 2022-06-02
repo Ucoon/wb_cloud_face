@@ -43,3 +43,23 @@ import 'package:wb_cloud_face/wb_cloud_face.dart';
   }
 ```
 
+注意事项：
+
+1. iOSSDK 依赖以下系统框架，需要在**BuildPhases**>**Link Binary With Libraries**中添加，可以参考 example，具体依赖的系统库如下：
+
+   ```dart
+   libz.tbd
+   libc++.tbd
+   UIKit.framewrok
+   WebKit.framewrok
+   ImageIO.framework
+   Security.framework
+   CoreVideo.framework
+   CoreMedia.framework
+   Accelerate.framework
+   AVFoundation.framework
+   CoreTelephony.framework 
+   SystemConfiguration.framework
+   ```
+
+   
