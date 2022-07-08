@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-
+import 'package:wb_cloud_face/wb_cloud_face.dart';
 import 'KCheckBox.dart';
 
-enum OriginMode {
-  idCard,
-  face,
-}
-
-extension OriginModeExtension on OriginMode {
+extension CompareTypeExtension on CompareType {
   String get label {
     switch (this) {
-      case OriginMode.idCard:
+      case CompareType.idCard:
         return '身份证对比';
-      case OriginMode.face:
+      case CompareType.none:
         return '仅活体检测';
       default:
         return '';
@@ -20,30 +15,32 @@ extension OriginModeExtension on OriginMode {
   }
 }
 
-class OriginChooseWidget extends StatefulWidget {
-  final OriginMode? originMode;
-  const OriginChooseWidget({
+class CompareTypeChooseWidget extends StatefulWidget {
+  final CompareType? compareType;
+  final Function? onCompareTypeChanged;
+  const CompareTypeChooseWidget({
     Key? key,
-    this.originMode,
+    this.compareType,
+    this.onCompareTypeChanged,
   }) : super(key: key);
 
   @override
-  _OriginChooseWidgetState createState() => _OriginChooseWidgetState();
+  _CompareTypeChooseWidgetState createState() => _CompareTypeChooseWidgetState();
 }
 
-class _OriginChooseWidgetState extends State<OriginChooseWidget> {
-  OriginMode? _currentOriginMode;
+class _CompareTypeChooseWidgetState extends State<CompareTypeChooseWidget> {
+  CompareType? _currentCompareType;
   @override
   void initState() {
     super.initState();
-    _currentOriginMode = widget.originMode;
+    _currentCompareType = widget.compareType;
   }
 
   @override
-  void didUpdateWidget(covariant OriginChooseWidget oldWidget) {
+  void didUpdateWidget(covariant CompareTypeChooseWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_currentOriginMode != widget.originMode) {
-      _currentOriginMode = widget.originMode;
+    if (_currentCompareType != widget.compareType) {
+      _currentCompareType = widget.compareType;
     }
   }
 
@@ -52,10 +49,9 @@ class _OriginChooseWidgetState extends State<OriginChooseWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
-        color: Color(0xFF1b1d1f),
         border: Border(
-          top: BorderSide(color: Color(0xFF303133), width: 1.0),
-          bottom: BorderSide(color: Color(0xFF303133), width: 1.0),
+          top: BorderSide(color: Colors.blueGrey, width: 0.5),
+          bottom: BorderSide(color: Colors.blueGrey, width: 0.5),
         ),
       ),
       child: Column(
@@ -65,7 +61,6 @@ class _OriginChooseWidgetState extends State<OriginChooseWidget> {
             '选择对比源',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.white54,
             ),
           ),
           const SizedBox(
@@ -74,20 +69,20 @@ class _OriginChooseWidgetState extends State<OriginChooseWidget> {
           Row(
             children: <Widget>[
               _buildChooseWidget(
-                OriginMode.idCard,
-                initValue: _currentOriginMode == OriginMode.idCard,
+                CompareType.idCard,
+                initValue: _currentCompareType == CompareType.idCard,
                 onChanged: (value) {
-                  _originModeChanged(OriginMode.idCard, value);
+                  _originModeChanged(CompareType.idCard, value);
                 },
               ),
               const SizedBox(
                 width: 20,
               ),
               _buildChooseWidget(
-                OriginMode.face,
-                initValue: _currentOriginMode == OriginMode.face,
+                CompareType.none,
+                initValue: _currentCompareType == CompareType.none,
                 onChanged: (value) {
-                  _originModeChanged(OriginMode.face, value);
+                  _originModeChanged(CompareType.none, value);
                 },
               ),
             ],
@@ -97,17 +92,18 @@ class _OriginChooseWidgetState extends State<OriginChooseWidget> {
     );
   }
 
-  void _originModeChanged(OriginMode originMode, bool check) {
+  void _originModeChanged(CompareType originMode, bool check) {
     if (check) {
-      if (_currentOriginMode == originMode) return;
+      if (_currentCompareType == originMode) return;
       setState(() {
-        _currentOriginMode = originMode;
+        _currentCompareType = originMode;
+        widget.onCompareTypeChanged?.call(_currentCompareType);
       });
     }
   }
 
   Widget _buildChooseWidget(
-    OriginMode originMode, {
+    CompareType originMode, {
     bool initValue = false,
     Function(bool)? onChanged,
   }) {
@@ -125,7 +121,6 @@ class _OriginChooseWidgetState extends State<OriginChooseWidget> {
           originMode.label,
           style: const TextStyle(
             fontSize: 14,
-            color: Colors.white54,
           ),
         ),
       ],

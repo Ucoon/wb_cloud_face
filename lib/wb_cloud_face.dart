@@ -1,16 +1,7 @@
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'model/wb_cloud_face_params.dart';
-import 'model/wb_cloud_face_verify_result.dart';
+library wb_cloud_face;
 
-class WbCloudFace {
-  static const MethodChannel _channel = MethodChannel('wb_cloud_face');
-
-  static Future<WbCloudFaceVerifyResult> openCloudFaceService({
-    required WbCloudFaceParams params,
-  }) async {
-    final res = await _channel.invokeMethod(
-        'openCloudFaceService', params.toJson());
-    return WbCloudFaceVerifyResult.fromJson(json.decode(res));
-  }
-}
+export 'src/wb_cloud_face.dart';
+export 'src/model/enum.dart';
+export 'src/model/wb_cloud_face_params.dart';
+export 'src/model/wb_cloud_face_verify_config.dart';
+export 'src/model/wb_cloud_face_verify_result.dart';

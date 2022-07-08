@@ -9,6 +9,9 @@ import com.webank.facelight.api.WbCloudFaceVerifySdk;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -35,8 +38,10 @@ public class WbCloudFacePlugin implements FlutterPlugin, MethodCallHandler, Acti
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         if (call.method.equals("openCloudFaceService")) {
-            WbCloudFaceVerifySdk.InputData inputData = WbCloudFaceVerifyKit.initWbCloudFaceInputData(call.arguments());
-            WbCloudFaceVerifyKit.openCloudFaceService(mContext, inputData, (res) -> {
+            HashMap<String, String> params = call.argument("params");
+            HashMap<String, String> config = call.argument("config");
+            WbCloudFaceVerifySdk.InputData inputData = WbCloudFaceVerifyKit.initWbCloudFaceInputData(params);
+            WbCloudFaceVerifyKit.openCloudFaceService(mContext, inputData, config, (res) -> {
                 JSONObject data = new JSONObject();
                 try {
                     data.put("result", res.isResult());

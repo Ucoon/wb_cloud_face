@@ -12,7 +12,13 @@ import com.webank.facelight.api.listeners.WbCloudFaceVerifyLoginListener;
 import com.webank.facelight.api.result.WbFaceError;
 import com.webank.facelight.process.FaceVerifyStatus;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
+
+import tech.ucoon.wb_cloud_face.wbcloud.entity.WbCloudFaceParams;
+import tech.ucoon.wb_cloud_face.wbcloud.entity.WbCloudFaceVerifyConfig;
 
 /**
  * 腾讯活体检测工具类
@@ -25,17 +31,18 @@ public class WbCloudFaceVerifyKit {
      *
      * @return
      */
-    public static WbCloudFaceVerifySdk.InputData initWbCloudFaceInputData(HashMap<String, String> params) {
+    public static WbCloudFaceVerifySdk.InputData initWbCloudFaceInputData(HashMap<String, String> paramsMap) {
+        WbCloudFaceParams params = injectBean(WbCloudFaceParams.class, paramsMap);
         WbCloudFaceVerifySdk.InputData inputData = new WbCloudFaceVerifySdk.InputData(
-                params.get("faceId"),
-                params.get("order"),
-                params.get("appId"),
+                params.getFaceId(),
+                params.getOrder(),
+                params.getAppId(),
                 "1.0.0",
-                params.get("nonce"),
-                params.get("userId"),
-                params.get("sign"),
+                params.getNonce(),
+                params.getUserId(),
+                params.getSign(),
                 FaceVerifyStatus.Mode.GRADE,
-                params.get("keyLicence"));
+                params.getKeyLicence());
         return inputData;
     }
 
@@ -45,29 +52,31 @@ public class WbCloudFaceVerifyKit {
      * @param activity
      * @param inputData
      */
-    public static void openCloudFaceService(Activity activity, WbCloudFaceVerifySdk.InputData inputData, WbCloudFaceVerifyResultListener listener) {
+    public static void openCloudFaceService(Activity activity, WbCloudFaceVerifySdk.InputData inputData,
+                                            HashMap<String, String> configMap, WbCloudFaceVerifyResultListener listener) {
         Log.d(TAG, "openCloudFaceService");
+        WbCloudFaceVerifyConfig config = injectBean(WbCloudFaceVerifyConfig.class, configMap);
         Bundle data = new Bundle();
         WbCloudFaceVerifyResult wbCloudFaceVerifyResult = new WbCloudFaceVerifyResult();
         data.putSerializable(WbCloudFaceContant.INPUT_DATA, inputData);
         //是否展示刷脸成功页面，默认不展示
-        data.putBoolean(WbCloudFaceContant.SHOW_SUCCESS_PAGE, false);
+        data.putBoolean(WbCloudFaceContant.SHOW_SUCCESS_PAGE, config.isShowSuccessPage());
         //是否展示刷脸失败页面，默认不展示
-        data.putBoolean(WbCloudFaceContant.SHOW_FAIL_PAGE, false);
+        data.putBoolean(WbCloudFaceContant.SHOW_FAIL_PAGE, config.isShowFailPage());
         //颜色设置,sdk内置黑色和白色两种模式，默认黑色
         //如果客户想定制自己的皮肤，可以传入WbCloudFaceContant.CUSTOM模式,此时可以配置ui里各种元素的色值
         //定制详情参考app/res/colors.xml文件里各个参数
-        data.putString(WbCloudFaceContant.COLOR_MODE, WbCloudFaceContant.WHITE);
+        data.putString(WbCloudFaceContant.COLOR_MODE, config.getColorMode());
         //是否需要录制上传视频 默认需要
-        data.putBoolean(WbCloudFaceContant.VIDEO_UPLOAD, true);
+        data.putBoolean(WbCloudFaceContant.VIDEO_UPLOAD, config.isVideoUpload());
         //是否使用ipv6网络
-        data.putBoolean(WbCloudFaceContant.IS_IPV6, false);
+        data.putBoolean(WbCloudFaceContant.IS_IPV6, config.isIpv6());
         //是否开启闭眼检测，默认不开启
-        data.putBoolean(WbCloudFaceContant.ENABLE_CLOSE_EYES, false);
+        data.putBoolean(WbCloudFaceContant.ENABLE_CLOSE_EYES, config.isEnableCloseEyes());
         //是否播放提示音，默认播放
-        data.putBoolean(WbCloudFaceContant.PLAY_VOICE, true);
+        data.putBoolean(WbCloudFaceContant.PLAY_VOICE, config.isPlayVoice());
         //设置选择的比对类型  默认为公安网纹图片对比
-        data.putString(WbCloudFaceContant.COMPARE_TYPE, WbCloudFaceContant.ID_CARD);
+        data.putString(WbCloudFaceContant.COMPARE_TYPE, config.getCompareType());
         //打开美颜功能
         FaceVerifyConfig.getInstance().enableFaceBeauty(false);
 
@@ -130,5 +139,50 @@ public class WbCloudFaceVerifyKit {
                 listener.onVerifyResultListener(wbCloudFaceVerifyResult);
             }
         });
+    }
+
+    public static <T> T injectBean(Class<T> beanClass, Map parasMap) {
+        T bean = null;
+        try {
+            //通过反射生成对象
+            bean = beanClass.newInstance();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        Method[] methods = beanClass.getMethods();
+        for (int i = 0; i < methods.length; i++) {
+            Method method = methods[i];
+            String methodName = method.getName();
+            if (methodName.startsWith("set") && methodName.length() > 3) {
+                Class[] types = method.getParameterTypes();
+                if (types.length == 1) {
+                    String attrName = firstCharToLowerCase(methodName.substring(3));
+                    if (parasMap.containsKey(attrName)) {
+                        Object value = parasMap.get(attrName);
+                        try {
+                            method.invoke(bean, value);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        return bean;
+    }
+
+    //取字段名且让其首字母小写
+    public static String firstCharToLowerCase(String substring) {
+        if (substring != null && substring.charAt(0) >= 'A' && substring.charAt(0) <= 'Z') {
+            char[] arr = substring.toCharArray();
+            arr[0] = (char) (arr[0] + 32);
+            return new String(arr);
+        } else {
+            return substring;
+        }
     }
 }

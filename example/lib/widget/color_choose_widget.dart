@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wb_cloud_face/wb_cloud_face.dart';
 
 import 'KCheckBox.dart';
-
-enum ColorMode {
-  black,
-  white,
-  custom,
-}
 
 extension ColorModeExtension on ColorMode {
   String get label {
@@ -25,9 +20,11 @@ extension ColorModeExtension on ColorMode {
 
 class ColorChooseWidget extends StatefulWidget {
   final ColorMode? colorMode;
+  final Function? onColorModeChanged;
   const ColorChooseWidget({
     Key? key,
     this.colorMode,
+    this.onColorModeChanged,
   }) : super(key: key);
 
   @override
@@ -55,10 +52,9 @@ class _ColorChooseWidgetState extends State<ColorChooseWidget> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
-        color: Color(0xFF1b1d1f),
         border: Border(
-          top: BorderSide(color: Color(0xFF303133), width: 1.0),
-          bottom: BorderSide(color: Color(0xFF303133), width: 1.0),
+          top: BorderSide(color: Colors.blueGrey, width: 0.5),
+          bottom: BorderSide(color: Colors.blueGrey, width: 0.5),
         ),
       ),
       child: Column(
@@ -68,7 +64,6 @@ class _ColorChooseWidgetState extends State<ColorChooseWidget> {
             '选择皮肤',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.white54,
             ),
           ),
           const SizedBox(
@@ -80,7 +75,7 @@ class _ColorChooseWidgetState extends State<ColorChooseWidget> {
                 ColorMode.black,
                 initValue: _currentColorMode == ColorMode.black,
                 onChanged: (value) {
-                  _colorModeChanged(ColorMode.black, value);
+                  _colorModeChanged(ColorMode.black);
                 },
               ),
               const SizedBox(
@@ -90,7 +85,7 @@ class _ColorChooseWidgetState extends State<ColorChooseWidget> {
                 ColorMode.white,
                 initValue: _currentColorMode == ColorMode.white,
                 onChanged: (value) {
-                  _colorModeChanged(ColorMode.white, value);
+                  _colorModeChanged(ColorMode.white);
                 },
               ),
               const SizedBox(
@@ -100,7 +95,7 @@ class _ColorChooseWidgetState extends State<ColorChooseWidget> {
                 ColorMode.custom,
                 initValue: _currentColorMode == ColorMode.custom,
                 onChanged: (value) {
-                  _colorModeChanged(ColorMode.custom, value);
+                  _colorModeChanged(ColorMode.custom);
                 },
               ),
             ],
@@ -110,13 +105,12 @@ class _ColorChooseWidgetState extends State<ColorChooseWidget> {
     );
   }
 
-  void _colorModeChanged(ColorMode colorMode, bool check) {
-    if (check) {
-      if (_currentColorMode == colorMode) return;
-      setState(() {
-        _currentColorMode = colorMode;
-      });
-    }
+  void _colorModeChanged(ColorMode colorMode) {
+    if (_currentColorMode == colorMode) return;
+    setState(() {
+      _currentColorMode = colorMode;
+      widget.onColorModeChanged?.call(_currentColorMode);
+    });
   }
 
   Widget _buildChooseWidget(
@@ -138,7 +132,6 @@ class _ColorChooseWidgetState extends State<ColorChooseWidget> {
           colorMode.label,
           style: const TextStyle(
             fontSize: 14,
-            color: Colors.white54,
           ),
         ),
       ],
