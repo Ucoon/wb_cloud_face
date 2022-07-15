@@ -19,7 +19,6 @@ dependencies:
 导入：
 
 ```dart
-import 'package:wb_cloud_face/model/wb_cloud_face_params.dart';
 import 'package:wb_cloud_face/wb_cloud_face.dart';
 ```
 
@@ -37,8 +36,22 @@ import 'package:wb_cloud_face/wb_cloud_face.dart';
       sign: '', //签名信息
       faceId: '', //此次刷脸用户标识，合作方需要向人脸识别后台拉取获得，详见获取 faceId 接口
     );
+    WbCloudFaceVerifyConfig config = WbCloudFaceVerifyConfig(
+      showSuccessPage:
+          StorageUtil().getBool('showSuccessPage', defValue: false),
+      showFailPage: StorageUtil().getBool('showFailPage', defValue: false),
+      colorMode:
+          StorageUtil().getString('colorMode', defValue: ColorMode.black.name),
+      videoUpload: StorageUtil().getBool('videoUpload', defValue: true),
+      isIpv6: StorageUtil().getBool('isIpv6', defValue: false),
+      enableCloseEyes:
+          StorageUtil().getBool('enableCloseEyes', defValue: false),
+      playVoice: StorageUtil().getBool('playVoice', defValue: true),
+      compareType: StorageUtil()
+          .getString('compareType', defValue: CompareType.idCard.name),
+    );
     WbCloudFaceVerifyResult res =
-        await WbCloudFace.openCloudFaceService(params: params);
+        await WbCloudFace.openCloudFaceService(params: params, config: config);
     Fluttertoast.showToast(msg: '认证${res.result ? '成功' : '失败'}');
   }
 ```
