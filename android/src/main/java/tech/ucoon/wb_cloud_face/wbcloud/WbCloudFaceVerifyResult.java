@@ -1,18 +1,24 @@
 package tech.ucoon.wb_cloud_face.wbcloud;
 
 public class WbCloudFaceVerifyResult {
-    private boolean result;
+    /**
+     * 核验结果
+     */
+    private boolean verifyResult;
+    /**
+     * 提示语
+     */
     private String message;
 
     public WbCloudFaceVerifyResult() {
     }
 
-    public boolean isResult() {
-        return result;
+    public boolean isVerifyResult() {
+        return verifyResult;
     }
 
-    public void setResult(boolean result) {
-        this.result = result;
+    public void setVerifyResult(boolean verifyResult) {
+        this.verifyResult = verifyResult;
     }
 
     public String getMessage() {

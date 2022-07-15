@@ -15,7 +15,7 @@ import com.webank.facelight.process.FaceVerifyStatus;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 import tech.ucoon.wb_cloud_face.wbcloud.entity.WbCloudFaceParams;
 import tech.ucoon.wb_cloud_face.wbcloud.entity.WbCloudFaceVerifyConfig;
@@ -29,7 +29,7 @@ public class WbCloudFaceVerifyKit {
     /**
      * 初始化刷脸SDK输入参数
      *
-     * @return
+     * @return SDK输入参数
      */
     public static WbCloudFaceVerifySdk.InputData initWbCloudFaceInputData(HashMap<String, String> paramsMap) {
         WbCloudFaceParams params = injectBean(WbCloudFaceParams.class, paramsMap);
@@ -49,8 +49,10 @@ public class WbCloudFaceVerifyKit {
     /**
      * 调用腾讯云活体检测SDK, 比对类型 默认为公安网纹图片对比
      *
-     * @param activity
-     * @param inputData
+     * @param activity  上下文
+     * @param inputData 输入参数
+     * @param configMap 配置参数
+     * @param listener  核验回调
      */
     public static void openCloudFaceService(Activity activity, WbCloudFaceVerifySdk.InputData inputData,
                                             HashMap<String, String> configMap, WbCloudFaceVerifyResultListener listener) {
@@ -113,7 +115,7 @@ public class WbCloudFaceVerifyKit {
                     } else {
                         Log.e(TAG, "sdk返回结果为空！");
                     }
-                    wbCloudFaceVerifyResult.setResult(result != null && result.isSuccess());
+                    wbCloudFaceVerifyResult.setVerifyResult(result != null && result.isSuccess());
                     wbCloudFaceVerifyResult.setMessage(message);
                     listener.onVerifyResultListener(wbCloudFaceVerifyResult);
                 });
@@ -134,14 +136,14 @@ public class WbCloudFaceVerifyKit {
                 } else {
                     Log.e(TAG, "sdk返回error为空！");
                 }
-                wbCloudFaceVerifyResult.setResult(false);
-                wbCloudFaceVerifyResult.setMessage("");
+                wbCloudFaceVerifyResult.setVerifyResult(false);
+                wbCloudFaceVerifyResult.setMessage(Objects.requireNonNull(error).getDesc());
                 listener.onVerifyResultListener(wbCloudFaceVerifyResult);
             }
         });
     }
 
-    public static <T> T injectBean(Class<T> beanClass, Map parasMap) {
+    public static <T> T injectBean(Class<T> beanClass, HashMap<String, String> parasMap) {
         T bean = null;
         try {
             //通过反射生成对象
@@ -152,8 +154,7 @@ public class WbCloudFaceVerifyKit {
             e.printStackTrace();
         }
         Method[] methods = beanClass.getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            Method method = methods[i];
+        for (Method method : methods) {
             String methodName = method.getName();
             if (methodName.startsWith("set") && methodName.length() > 3) {
                 Class[] types = method.getParameterTypes();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wb_cloud_face/wb_cloud_face.dart';
 import 'package:wb_cloud_face_example/widget/color_choose_widget.dart';
-import 'package:wb_cloud_face_example/widget/origin_choose_widget.dart';
+import 'package:wb_cloud_face_example/widget/compare_type_choose_widget.dart';
 import '../util/storage.dart';
 import '../widget/KCupertinoSwitch.dart';
 
