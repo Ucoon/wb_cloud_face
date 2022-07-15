@@ -40,15 +40,18 @@ import 'package:wb_cloud_face/wb_cloud_face.dart';
       showSuccessPage:
           StorageUtil().getBool('showSuccessPage', defValue: false),
       showFailPage: StorageUtil().getBool('showFailPage', defValue: false),
-      colorMode:
-          StorageUtil().getString('colorMode', defValue: ColorMode.black.name),
+      colorMode: ColorMode.values.firstWhere((element) =>
+          element.name ==
+          StorageUtil().getString('colorMode', defValue: ColorMode.black.name)),
       videoUpload: StorageUtil().getBool('videoUpload', defValue: true),
       isIpv6: StorageUtil().getBool('isIpv6', defValue: false),
       enableCloseEyes:
           StorageUtil().getBool('enableCloseEyes', defValue: false),
       playVoice: StorageUtil().getBool('playVoice', defValue: true),
-      compareType: StorageUtil()
-          .getString('compareType', defValue: CompareType.idCard.name),
+      compareType: CompareType.values.firstWhere((element) =>
+          element.name ==
+          StorageUtil()
+              .getString('compareType', defValue: CompareType.idCard.name)),
     );
     WbCloudFaceVerifyResult res =
         await WbCloudFace.openCloudFaceService(params: params, config: config);
