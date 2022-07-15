@@ -31,12 +31,12 @@ FlutterResult resultFunc;
 
 -(WBFaceVerifySDKConfig *)getSDKSettings:(NSDictionary<NSString*, NSString*>*)_config{
     WBFaceVerifySDKConfig *config = [WBFaceVerifySDKConfig sdkConfig];
-    config.showSuccessPage = _config[@"showSuccessPage"];
-    config.showFailurePage = _config[@"showFailPage"];
+    config.showSuccessPage = [_config[@"showSuccessPage"] isEqual: @"1"];
+    config.showFailurePage = [_config[@"showFailPage"] isEqual: @"1"];
     config.theme = [_config[@"colorMode"] isEqualToString: @"black"]? WBFaceVerifyThemeDarkness: WBFaceVerifyThemeLightness;
-    config.recordVideo = _config[@"videoUpload"];
-    config.isIpv6 = _config[@"isIpv6"];
-    config.mute = _config[@"playVoice"];
+    config.recordVideo = [_config[@"videoUpload"] isEqual: @"1"];
+    config.isIpv6 = [_config[@"isIpv6"] isEqual: @"1"];
+    config.mute = [_config[@"playVoice"] isEqual: @"1"];
     config.useSimpleMode = NO;
     config.useAdvanceCompare = [_config[@"compareType"] isEqualToString: @"idCard"]? YES : NO ;
     return config;
