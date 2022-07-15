@@ -5,6 +5,8 @@ PODS:
     - Toast
   - "permission_handler (5.1.0+2)":
     - Flutter
+  - shared_preferences_ios (0.0.1):
+    - Flutter
   - Toast (4.0.0)
   - wb_cloud_face (0.0.1):
     - Flutter
@@ -13,6 +15,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - wb_cloud_face (from `.symlinks/plugins/wb_cloud_face/ios`)
 
 SPEC REPOS:
@@ -26,6 +29,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   wb_cloud_face:
     :path: ".symlinks/plugins/wb_cloud_face/ios"
 
@@ -33,9 +38,10 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
+  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  wb_cloud_face: 3abff30056ed7a175844e7adb43ccbfb115928e4
+  wb_cloud_face: eaf4be3893ec93203cea57e877679d8b5ce6b2d8
 
 PODFILE CHECKSUM: 58e1b9276714f97d7af10f9ccf1292f951255c57
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

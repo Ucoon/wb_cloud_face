@@ -19,7 +19,7 @@ FlutterResult resultFunc;
     resultFunc = result;
   if ([@"openCloudFaceService" isEqualToString:call.method]) {
       [self setWBVerifyCallBack];
-      [self openCloudFaceService:call.arguments];
+      [self openCloudFaceService:call.arguments[@"params"] config:call.arguments[@"config"]];
   } else {
     result(FlutterMethodNotImplemented);
   }
@@ -29,26 +29,28 @@ FlutterResult resultFunc;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(wbSDKServiceDidFinishedNotification:) name:WBFaceVerifyCustomerServiceDidFinishedNotification object:nil];
 }
 
--(WBFaceVerifySDKConfig *)getSDKSettings{
+-(WBFaceVerifySDKConfig *)getSDKSettings:(NSDictionary<NSString*, NSString*>*)_config{
     WBFaceVerifySDKConfig *config = [WBFaceVerifySDKConfig sdkConfig];
-    config.showSuccessPage = NO;
-    config.showFailurePage = NO;
-    config.theme = WBFaceVerifyThemeLightness;
-    config.recordVideo = NO;
+    config.showSuccessPage = _config[@"showSuccessPage"];
+    config.showFailurePage = _config[@"showFailPage"];
+    config.theme = [_config[@"colorMode"] isEqualToString: @"black"]? WBFaceVerifyThemeDarkness: WBFaceVerifyThemeLightness;
+    config.recordVideo = _config[@"videoUpload"];
+    config.isIpv6 = _config[@"isIpv6"];
+    config.mute = _config[@"playVoice"];
     config.useSimpleMode = NO;
-    config.isIpv6 = NO;
-    config.useAdvanceCompare = NO;
-    return  config;
+    config.useAdvanceCompare = [_config[@"compareType"] isEqualToString: @"idCard"]? YES : NO ;
+    return config;
 }
 
--(void)openCloudFaceService:(NSDictionary<NSString*, NSString*>*)_inputData{
-    WBFaceVerifySDKConfig *config = [self getSDKSettings];
+-(void)openCloudFaceService:(NSDictionary<NSString*, NSString*>*)_inputData
+                            config:(NSDictionary<NSString*, NSString*>*)_config{
+    WBFaceVerifySDKConfig *config = [self getSDKSettings:_config];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"%@",@"正式开始启动!!!!!!!!!!!!!");
         [[WBFaceVerifyCustomerService sharedInstance]  initSDKWithUserId:_inputData[@"userId"] nonce:_inputData[@"nonce"]  sign:_inputData[@"sign"] appid:_inputData[@"appId"] orderNo:_inputData[@"order"] apiVersion:@"1.0.0" licence:_inputData[@"keyLicence"] faceId:_inputData[@"faceId"] sdkConfig:config success:^{
             [[WBFaceVerifyCustomerService sharedInstance] startWbFaceVeirifySdk];
         } failure:^(WBFaceError * _Nonnull error) {
-            NSString *message = [NSString stringWithFormat:@"%@", error.desc];
+            NSString *message = [NSString stringWithFormat:@"code: %ld, message %@", error.code, error.desc];
             NSLog(@"error: %@", message);
             NSDictionary *result = @{@"result": @NO, @"message": @""};
             resultFunc([self convertToJsonData:result]);
