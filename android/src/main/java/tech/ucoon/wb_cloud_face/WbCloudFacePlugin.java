@@ -44,8 +44,10 @@ public class WbCloudFacePlugin implements FlutterPlugin, MethodCallHandler, Acti
             WbCloudFaceVerifyKit.openCloudFaceService(mContext, inputData, config, (res) -> {
                 JSONObject data = new JSONObject();
                 try {
-                    data.put("result", res.isVerifyResult());
-                    data.put("message", res.getMessage());
+                    data.put("code", res.getCode());
+                    data.put("description", res.getDescription());
+                    data.put("errorReason", res.getErrorReason());
+                    data.put("verifyResult", res.getVerifyResult());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

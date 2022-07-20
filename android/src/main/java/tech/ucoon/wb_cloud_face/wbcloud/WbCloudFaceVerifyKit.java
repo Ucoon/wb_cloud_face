@@ -3,7 +3,6 @@ package tech.ucoon.wb_cloud_face.wbcloud;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.webank.facelight.api.FaceVerifyConfig;
 import com.webank.facelight.api.WbCloudFaceContant;
@@ -12,9 +11,11 @@ import com.webank.facelight.api.listeners.WbCloudFaceVerifyLoginListener;
 import com.webank.facelight.api.result.WbFaceError;
 import com.webank.facelight.process.FaceVerifyStatus;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import tech.ucoon.wb_cloud_face.wbcloud.entity.WbCloudFaceParams;
@@ -92,22 +93,24 @@ public class WbCloudFaceVerifyKit {
                 Log.i(TAG, "onLoginSuccess");
                 //拉起刷脸页面
                 WbCloudFaceVerifySdk.getInstance().startWbFaceVerifySdk(activity, result -> {
-                    String message = "";
                     //得到刷脸结果
                     if (result != null) {
                         if (result.isSuccess()) {
+                            wbCloudFaceVerifyResult.setCode(WbCloudFaceVerifyResult.SUCCEED);
                             Log.d(TAG, "刷脸成功! Sign=" + result.getSign() + "; liveRate=" + result.getLiveRate() +
                                     "; similarity=" + result.getSimilarity() + "userImageString=" + result.getUserImageString());
                         } else {
                             WbFaceError error = result.getError();
                             if (error != null) {
+                                wbCloudFaceVerifyResult.setCode(Integer.parseInt(error.getCode()));
+                                wbCloudFaceVerifyResult.setDescription(error.getDesc());
+                                wbCloudFaceVerifyResult.setErrorReason(error.getReason());
                                 Log.d(TAG, "刷脸失败！domain=" + error.getDomain() + " ;code= " + error.getCode()
                                         + " ;desc=" + error.getDesc() + ";reason=" + error.getReason());
                                 if (error.getDomain().equals(WbFaceError.WBFaceErrorDomainCompareServer)) {
                                     Log.d(TAG, "对比失败，liveRate=" + result.getLiveRate() +
                                             "; similarity=" + result.getSimilarity());
                                 }
-                                message = error.getDesc();
                             } else {
                                 Log.e(TAG, "sdk返回error为空！");
                             }
@@ -115,8 +118,7 @@ public class WbCloudFaceVerifyKit {
                     } else {
                         Log.e(TAG, "sdk返回结果为空！");
                     }
-                    wbCloudFaceVerifyResult.setVerifyResult(result != null && result.isSuccess());
-                    wbCloudFaceVerifyResult.setMessage(message);
+                    wbCloudFaceVerifyResult.setVerifyResult(parameters(result));
                     listener.onVerifyResultListener(wbCloudFaceVerifyResult);
                 });
             }
@@ -128,16 +130,12 @@ public class WbCloudFaceVerifyKit {
                 if (error != null) {
                     Log.d(TAG, "登录失败！domain=" + error.getDomain() + " ;code= " + error.getCode()
                             + " ;desc=" + error.getDesc() + ";reason=" + error.getReason());
-                    if (error.getDomain().equals(WbFaceError.WBFaceErrorDomainParams)) {
-                        Toast.makeText(activity, "传入参数有误！" + error.getDesc(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(activity, "登录刷脸sdk失败！" + error.getDesc(), Toast.LENGTH_SHORT).show();
-                    }
+                    wbCloudFaceVerifyResult.setCode(Integer.parseInt(error.getCode()));
+                    wbCloudFaceVerifyResult.setDescription(error.getDesc());
+                    wbCloudFaceVerifyResult.setErrorReason(error.getReason());
                 } else {
                     Log.e(TAG, "sdk返回error为空！");
                 }
-                wbCloudFaceVerifyResult.setVerifyResult(false);
-                wbCloudFaceVerifyResult.setMessage(Objects.requireNonNull(error).getDesc());
                 listener.onVerifyResultListener(wbCloudFaceVerifyResult);
             }
         });
@@ -185,5 +183,17 @@ public class WbCloudFaceVerifyKit {
         } else {
             return substring;
         }
+    }
+
+    public static Map<String, Object> parameters(Object obj) {
+        Map<String, Object> map = new HashMap<>();
+        for (Field field : obj.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                map.put(field.getName(), field.get(obj));
+            } catch (Exception ignored) {
+            }
+        }
+        return map;
     }
 }

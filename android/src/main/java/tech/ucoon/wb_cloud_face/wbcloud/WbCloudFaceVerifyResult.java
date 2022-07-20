@@ -1,31 +1,55 @@
 package tech.ucoon.wb_cloud_face.wbcloud;
 
+import java.util.Map;
+
 public class WbCloudFaceVerifyResult {
+    public static final int SUCCEED = 200;
+    /**
+     * 错误码：code == 200代表成功
+     */
+    private int code = -1;
+    /**
+     * 说明
+     */
+    private String description = "";
+    /**
+     * 错误原因
+     */
+    private String errorReason = "";
     /**
      * 核验结果
      */
-    private boolean verifyResult;
-    /**
-     * 提示语
-     */
-    private String message;
+    private Map<String, Object> verifyResult;
 
-    public WbCloudFaceVerifyResult() {
+    public int getCode() {
+        return code;
     }
 
-    public boolean isVerifyResult() {
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getErrorReason() {
+        return errorReason;
+    }
+
+    public void setErrorReason(String errorReason) {
+        this.errorReason = errorReason;
+    }
+
+    public Map<String, Object> getVerifyResult() {
         return verifyResult;
     }
 
-    public void setVerifyResult(boolean verifyResult) {
+    public void setVerifyResult(Map<String, Object> verifyResult) {
         this.verifyResult = verifyResult;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 }
