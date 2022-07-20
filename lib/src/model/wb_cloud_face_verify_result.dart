@@ -12,21 +12,31 @@ String wbCloudFaceVerifyResultToJson(WbCloudFaceVerifyResult data) =>
 
 class WbCloudFaceVerifyResult {
   WbCloudFaceVerifyResult({
-    this.result = false,
-    this.message = '',
+    this.code = -1,
+    this.description = '',
+    this.errorReason = '',
+    this.verifyResult,
   });
 
-  bool result;
-  String message;
+  int code; //错误码：code == 200代表成功
+  String description; //说明
+  String errorReason; //错误原因
+  Map<String, dynamic>? verifyResult; //核验结果
+
+  bool get succeed => code == 200;
 
   factory WbCloudFaceVerifyResult.fromJson(Map<String, dynamic> json) =>
       WbCloudFaceVerifyResult(
-        result: json["result"],
-        message: json["message"],
+        code: json["code"],
+        description: json["description"],
+        errorReason: json["errorReason"],
+        verifyResult: json["verifyResult"],
       );
 
   Map<String, dynamic> toJson() => {
-        "result": result,
-        "message": message,
+        "result": code,
+        "description": description,
+        "errorReason": errorReason,
+        "verifyResult": verifyResult,
       };
 }

@@ -142,6 +142,9 @@ class HomePage extends StatelessWidget {
     );
     WbCloudFaceVerifyResult res =
         await WbCloudFace.openCloudFaceService(params, config: config);
-    Fluttertoast.showToast(msg: '认证${res.result ? '成功' : '失败'}');
+    Fluttertoast.showToast(
+        msg: '认证${res.succeed ? '成功' : '失败'}, 说明：${res.description}');
+    debugPrint(
+        'HomePage._openCloudFaceService verifyResult ${res.verifyResult}');
   }
 }
