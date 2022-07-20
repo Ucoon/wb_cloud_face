@@ -7,15 +7,15 @@ import 'model/wb_cloud_face_verify_result.dart';
 class WbCloudFace {
   static const MethodChannel _channel = MethodChannel('wb_cloud_face');
 
-  static Future<WbCloudFaceVerifyResult> openCloudFaceService({
-    required WbCloudFaceParams params,
-    required WbCloudFaceVerifyConfig config,
+  static Future<WbCloudFaceVerifyResult> openCloudFaceService(
+    WbCloudFaceParams params, {
+    WbCloudFaceVerifyConfig? config,
   }) async {
     final res = await _channel.invokeMethod(
       'openCloudFaceService',
       {
         'params': params.toJson(),
-        'config': config.toJson(),
+        'config': config?.toJson() ?? WbCloudFaceVerifyConfig().toJson(),
       },
     );
     return WbCloudFaceVerifyResult.fromJson(json.decode(res));

@@ -141,7 +141,7 @@ class HomePage extends StatelessWidget {
               .getString('compareType', defValue: CompareType.idCard.name)),
     );
     WbCloudFaceVerifyResult res =
-        await WbCloudFace.openCloudFaceService(params: params, config: config);
+        await WbCloudFace.openCloudFaceService(params, config: config);
     Fluttertoast.showToast(msg: '认证${res.result ? '成功' : '失败'}');
   }
 }
