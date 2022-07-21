@@ -3,23 +3,20 @@ package tech.ucoon.wb_cloud_face.wbcloud;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.webank.facelight.api.FaceVerifyConfig;
 import com.webank.facelight.api.WbCloudFaceContant;
 import com.webank.facelight.api.WbCloudFaceVerifySdk;
 import com.webank.facelight.api.listeners.WbCloudFaceVerifyLoginListener;
 import com.webank.facelight.api.result.WbFaceError;
 import com.webank.facelight.process.FaceVerifyStatus;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
 import tech.ucoon.wb_cloud_face.wbcloud.entity.WbCloudFaceParams;
 import tech.ucoon.wb_cloud_face.wbcloud.entity.WbCloudFaceVerifyConfig;
+import tech.ucoon.wb_cloud_face.wbcloud.entity.WbFaceVerifyResult;
 
 /**
  * 腾讯活体检测工具类
@@ -93,6 +90,7 @@ public class WbCloudFaceVerifyKit {
                 Log.i(TAG, "onLoginSuccess");
                 //拉起刷脸页面
                 WbCloudFaceVerifySdk.getInstance().startWbFaceVerifySdk(activity, result -> {
+                    WbFaceVerifyResult wbFaceVerifyResult = WbFaceVerifyResult.setWbFaceVerifyResult(result);
                     //得到刷脸结果
                     if (result != null) {
                         if (result.isSuccess()) {
@@ -118,7 +116,7 @@ public class WbCloudFaceVerifyKit {
                     } else {
                         Log.e(TAG, "sdk返回结果为空！");
                     }
-                    wbCloudFaceVerifyResult.setVerifyResult(parameters(result));
+                    wbCloudFaceVerifyResult.setVerifyResult(parameters(wbFaceVerifyResult));
                     listener.onVerifyResultListener(wbCloudFaceVerifyResult);
                 });
             }
@@ -186,6 +184,7 @@ public class WbCloudFaceVerifyKit {
     }
 
     public static Map<String, Object> parameters(Object obj) {
+        if (obj == null) return null;
         Map<String, Object> map = new HashMap<>();
         for (Field field : obj.getClass().getDeclaredFields()) {
             field.setAccessible(true);

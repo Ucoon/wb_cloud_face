@@ -1,17 +1,9 @@
 package tech.ucoon.wb_cloud_face;
 
 import android.app.Activity;
-
 import androidx.annotation.NonNull;
-
 import com.webank.facelight.api.WbCloudFaceVerifySdk;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
-import java.util.Map;
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -42,16 +34,7 @@ public class WbCloudFacePlugin implements FlutterPlugin, MethodCallHandler, Acti
             HashMap<String, String> config = call.argument("config");
             WbCloudFaceVerifySdk.InputData inputData = WbCloudFaceVerifyKit.initWbCloudFaceInputData(params);
             WbCloudFaceVerifyKit.openCloudFaceService(mContext, inputData, config, (res) -> {
-                JSONObject data = new JSONObject();
-                try {
-                    data.put("code", res.getCode());
-                    data.put("description", res.getDescription());
-                    data.put("errorReason", res.getErrorReason());
-                    data.put("verifyResult", res.getVerifyResult());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                result.success(data.toString());
+                result.success(WbCloudFaceVerifyKit.parameters(res));
             });
         } else {
             result.notImplemented();

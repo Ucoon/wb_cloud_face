@@ -18,6 +18,6 @@ class WbCloudFace {
         'config': config?.toJson() ?? WbCloudFaceVerifyConfig().toJson(),
       },
     );
-    return WbCloudFaceVerifyResult.fromJson(json.decode(res));
+    return wbCloudFaceVerifyResultFromJson(json.encode(res));
   }
 }
