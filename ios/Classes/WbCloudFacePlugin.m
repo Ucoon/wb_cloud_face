@@ -8,21 +8,21 @@
 @implementation WbCloudFacePlugin
 FlutterResult resultFunc;
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"wb_cloud_face"
-            binaryMessenger:[registrar messenger]];
-  WbCloudFacePlugin* instance = [[WbCloudFacePlugin alloc] init];
-  [registrar addMethodCallDelegate:instance channel:channel];
+    FlutterMethodChannel* channel = [FlutterMethodChannel
+                                     methodChannelWithName:@"wb_cloud_face"
+                                     binaryMessenger:[registrar messenger]];
+    WbCloudFacePlugin* instance = [[WbCloudFacePlugin alloc] init];
+    [registrar addMethodCallDelegate:instance channel:channel];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     resultFunc = result;
-  if ([@"openCloudFaceService" isEqualToString:call.method]) {
-      [self setWBVerifyCallBack];
-      [self openCloudFaceService:call.arguments[@"params"] config:call.arguments[@"config"]];
-  } else {
-    result(FlutterMethodNotImplemented);
-  }
+    if ([@"openCloudFaceService" isEqualToString:call.method]) {
+        [self setWBVerifyCallBack];
+        [self openCloudFaceService:call.arguments[@"params"] config:call.arguments[@"config"]];
+    } else {
+        result(FlutterMethodNotImplemented);
+    }
 }
 
 - (void)setWBVerifyCallBack {
@@ -43,7 +43,7 @@ FlutterResult resultFunc;
 }
 
 -(void)openCloudFaceService:(NSDictionary<NSString*, NSString*>*)_inputData
-                            config:(NSDictionary<NSString*, NSString*>*)_config{
+                     config:(NSDictionary<NSString*, NSString*>*)_config{
     WBFaceVerifySDKConfig *config = [self getSDKSettings:_config];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"%@",@"正式开始启动!!!!!!!!!!!!!");
@@ -52,8 +52,8 @@ FlutterResult resultFunc;
         } failure:^(WBFaceError * _Nonnull error) {
             NSString *message = [NSString stringWithFormat:@"code: %ld, message %@", error.code, error.desc];
             NSLog(@"error: %@", message);
-            NSDictionary *result = @{@"result": @NO, @"message": @""};
-            resultFunc([self convertToJsonData:result]);
+            NSDictionary *result = @{@"code": @(error.code), @"description": error.desc, @"errorReason":error.reason};
+            resultFunc(result);
         }];
     });
 }
@@ -62,15 +62,15 @@ FlutterResult resultFunc;
 #pragma mark - WBFaceVerifyCustomerServiceDelegate
 -(void)wbSDKServiceDidFinishedNotification:(NSNotification *)noti {
     WBFaceVerifyResult *faceVerifyResult = (WBFaceVerifyResult *)[noti.userInfo objectForKey:@"faceVerifyResult"];
+    NSDictionary *verifyResult=@{@"success":@(faceVerifyResult.isSuccess), @"sign":faceVerifyResult.sign,@"liveRate":faceVerifyResult.liveRate,@"similarity":faceVerifyResult.similarity,@"userImageString":faceVerifyResult.userImageString,@"orderNo":faceVerifyResult.orderNo};
     NSDictionary *result;
     if (faceVerifyResult.isSuccess) {
-        result = @{@"result": @YES, @"message": @""};
+        result = @{@"code": @200, @"description": @"", @"errorReason": @"", @"verifyResult": verifyResult};
     }else {
-        NSString *des = faceVerifyResult.error.desc;
-        result = @{@"result": @NO, @"message": des};
+        result = @{@"code": @(faceVerifyResult.error.code), @"description": faceVerifyResult.error.desc, @"errorReason":faceVerifyResult.error.reason, @"verifyResult":verifyResult};
     }
     NSLog(@"%@",result);
-    resultFunc([self convertToJsonData:result]);
+    resultFunc(result);
 }
 
 - (NSString *)convertToJsonData:(NSDictionary *)dict
