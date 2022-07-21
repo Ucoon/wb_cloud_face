@@ -55,7 +55,10 @@ import 'package:wb_cloud_face/wb_cloud_face.dart';
     );
     WbCloudFaceVerifyResult res =
         await WbCloudFace.openCloudFaceService(params, config: config);
-    Fluttertoast.showToast(msg: '认证${res.result ? '成功' : '失败'}');
+    Fluttertoast.showToast(
+        msg: '认证${res.succeed ? '成功' : '失败'}, 说明：${res.description}');
+    debugPrint(
+        'HomePage._openCloudFaceService verifyResult ${res.verifyResult}');
   }
 ```
 
@@ -78,4 +81,7 @@ import 'package:wb_cloud_face/wb_cloud_face.dart';
    SystemConfiguration.framework
    ```
 
-   
+2. `WbCloudFaceVerifyResult`包含`code`、`description`、`errorReason`，具体错误说明可参考
+
+   - [Android错误码](https://cloud.tencent.com/document/product/1007/57622)
+   - [iOS错误码](https://cloud.tencent.com/document/product/1007/57628)

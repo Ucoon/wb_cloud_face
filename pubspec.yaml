@@ -1,6 +1,6 @@
 name: wb_cloud_face
 description: tencent cloud reflection face verify
-version: 0.0.3
+version: 0.0.4
 homepage: https://github.com/Ucoon/wb_cloud_face
 
 environment:
