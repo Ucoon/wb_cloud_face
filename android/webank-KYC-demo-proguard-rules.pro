@@ -21,6 +21,14 @@
 -keep public class com.webank.cloudface.demo.GetFaceId$*{
     *;
 }
+
+-keep class tech.ucoon.wb_cloud_face.wbcloud.entity.*{
+    *;
+}
+
+-keep class tech.ucoon.wb_cloud_face.wbcloud.WbCloudFaceVerifyResult{
+    *;
+}
 #######################Demo里不能被混淆的########################################
 
 #不混淆内部类
