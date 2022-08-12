@@ -46,12 +46,12 @@ FlutterResult resultFunc;
                      config:(NSDictionary<NSString*, NSString*>*)_config{
     WBFaceVerifySDKConfig *config = [self getSDKSettings:_config];
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"%@",@"正式开始启动!!!!!!!!!!!!!");
+        NSLog(@"wb cloud face %@",@"start verify");
         [[WBFaceVerifyCustomerService sharedInstance]  initSDKWithUserId:_inputData[@"userId"] nonce:_inputData[@"nonce"]  sign:_inputData[@"sign"] appid:_inputData[@"appId"] orderNo:_inputData[@"order"] apiVersion:@"1.0.0" licence:_inputData[@"keyLicence"] faceId:_inputData[@"faceId"] sdkConfig:config success:^{
             [[WBFaceVerifyCustomerService sharedInstance] startWbFaceVeirifySdk];
         } failure:^(WBFaceError * _Nonnull error) {
             NSString *message = [NSString stringWithFormat:@"code: %ld, message %@", error.code, error.desc];
-            NSLog(@"error: %@", message);
+            NSLog(@"wb cloud face error: %@", message);
             NSDictionary *result = @{@"code": @(error.code), @"description": error.desc, @"errorReason":error.reason};
             resultFunc(result);
         }];
@@ -62,35 +62,14 @@ FlutterResult resultFunc;
 #pragma mark - WBFaceVerifyCustomerServiceDelegate
 -(void)wbSDKServiceDidFinishedNotification:(NSNotification *)noti {
     WBFaceVerifyResult *faceVerifyResult = (WBFaceVerifyResult *)[noti.userInfo objectForKey:@"faceVerifyResult"];
-    NSDictionary *verifyResult=@{@"success":@(faceVerifyResult.isSuccess), @"sign":faceVerifyResult.sign,@"liveRate":faceVerifyResult.liveRate,@"similarity":faceVerifyResult.similarity,@"userImageString":faceVerifyResult.userImageString,@"orderNo":faceVerifyResult.orderNo};
+    NSDictionary *verifyResult = [NSDictionary dictionaryWithObjectsAndKeys:@(faceVerifyResult.isSuccess),@"success",faceVerifyResult.sign,@"sign", faceVerifyResult.liveRate, @"liveRate", faceVerifyResult.similarity,@"similarity", faceVerifyResult.userImageString, @"userImageString",faceVerifyResult.orderNo, @"orderNo", nil];
     NSDictionary *result;
     if (faceVerifyResult.isSuccess) {
-        result = @{@"code": @200, @"description": @"", @"errorReason": @"", @"verifyResult": verifyResult};
+        result = [NSDictionary dictionaryWithObjectsAndKeys:@200,@"code",@"",@"description",verifyResult,@"verifyResult", nil];
     }else {
-        result = @{@"code": @(faceVerifyResult.error.code), @"description": faceVerifyResult.error.desc, @"errorReason":faceVerifyResult.error.reason, @"verifyResult":verifyResult};
+        result = [NSDictionary dictionaryWithObjectsAndKeys:@(faceVerifyResult.error.code),@"code",faceVerifyResult.error.desc,@"description",faceVerifyResult.error.reason,@"errorReason", verifyResult, @"verifyResult",nil];
     }
-    NSLog(@"%@",result);
+    NSLog(@"wb cloud face result: %@",result);
     resultFunc(result);
 }
-
-- (NSString *)convertToJsonData:(NSDictionary *)dict
-{
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    NSString *jsonString;
-    if (!jsonData) {
-        NSLog(@"%@",error);
-    } else {
-        jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
-    }
-    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
-    NSRange range = {0,jsonString.length};
-    //去掉字符串中的空格
-    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
-    NSRange range2 = {0,mutStr.length};
-    //去掉字符串中的换行符
-    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
-    return mutStr;
-}
-
 @end
